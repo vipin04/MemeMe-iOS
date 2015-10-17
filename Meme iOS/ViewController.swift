@@ -33,7 +33,7 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
     }
     
     override func viewWillDisappear(animated: Bool) {
-        self.viewWillDisappear(animated)
+        super.viewWillDisappear(animated)
         self.unsubscribeFromKeyboardNotifications()
 
     }
@@ -57,11 +57,21 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         return true;
     }
     
-    @IBAction func albumButtonaTapped(sender: AnyObject) {
+    @IBAction func albumButtonTapped(sender: AnyObject) {
+        presentImagePickerWithSourceType(.PhotoLibrary)
+    }
+
+    
+    @IBAction func cameraButtonTapped(sender: AnyObject) {
+        presentImagePickerWithSourceType(.Camera)
+    }
+    
+    
+    func presentImagePickerWithSourceType(source:UIImagePickerControllerSourceType) {
         let imagePicker = UIImagePickerController();
         imagePicker.allowsEditing = false
-        imagePicker.sourceType = .PhotoLibrary
-
+        imagePicker.sourceType = source
+        
         imagePicker.delegate = self
         self.presentViewController(imagePicker, animated: true, completion: nil)
     }

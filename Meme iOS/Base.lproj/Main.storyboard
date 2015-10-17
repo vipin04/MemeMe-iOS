@@ -35,11 +35,15 @@
                                 <animations/>
                                 <items>
                                     <barButtonItem style="plain" systemItem="flexibleSpace" id="pew-me-8yb"/>
-                                    <barButtonItem systemItem="camera" id="aoT-vd-gqr"/>
+                                    <barButtonItem systemItem="camera" id="aoT-vd-gqr">
+                                        <connections>
+                                            <action selector="cameraButtonTapped:" destination="BYZ-38-t0r" id="D0j-Be-I1X"/>
+                                        </connections>
+                                    </barButtonItem>
                                     <barButtonItem width="20" style="plain" systemItem="fixedSpace" id="d8K-ES-mpa"/>
                                     <barButtonItem title="Album" id="wEv-F8-3gf">
                                         <connections>
-                                            <action selector="albumButtonaTapped:" destination="BYZ-38-t0r" id="Isb-Yc-ppp"/>
+                                            <action selector="albumButtonTapped:" destination="BYZ-38-t0r" id="bIF-dk-RLw"/>
                                         </connections>
                                     </barButtonItem>
                                     <barButtonItem style="plain" systemItem="flexibleSpace" id="4Fz-NP-f4K"/>
