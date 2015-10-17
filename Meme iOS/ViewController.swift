@@ -17,6 +17,7 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
     
     
     var isViewRepositioned = false
+    var keyBoardHeight:CGFloat = 0.0
     
     @IBAction func AlbumButtonTapped(sender: AnyObject) {
         
@@ -67,6 +68,19 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
     }
     
     
+    @IBAction func shareMemeTapped(sender: AnyObject) {
+        if let memeImage = getMemeImage() {
+            let activityController = UIActivityViewController(activityItems: [memeImage], applicationActivities: nil)
+            self.presentViewController(activityController, animated: true, completion: nil)
+        }
+    }
+    
+    
+    func getMemeImage () -> UIImage? {
+        return imageView.image
+    }
+    
+    
     func presentImagePickerWithSourceType(source:UIImagePickerControllerSourceType) {
         let imagePicker = UIImagePickerController();
         imagePicker.allowsEditing = false
@@ -82,7 +96,7 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
     //Register for Notifications when keyboard appears
     func subscribeToKeyboardNotifications () {
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "keyboardWillShow:", name: UIKeyboardWillShowNotification, object: nil)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "keyboardWillHide:", name: UIKeyboardWillHideNotification, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "keyboardWillHide", name: UIKeyboardWillHideNotification, object: nil)
     }
     
     func unsubscribeFromKeyboardNotifications () {
@@ -91,10 +105,12 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
     
     //Move the view (if required) when keyboard is shown
     func keyboardWillShow (notification:NSNotification) {
+        keyBoardHeight = getKeyboardHeight(notification) //Save keyboard height
         let firstResponder = getFirstResponder()
+
         
         //Get y coordinate of full blown keyboard
-        let keyboardY = getKeyboardRect(notification).origin.y - getKeyboardHeight(notification)
+        let keyboardY = getKeyboardRect(notification).origin.y - keyBoardHeight
         
         if firstResponder.frame.origin.y >= keyboardY {
             self.view.frame.origin.y -= getKeyboardHeight(notification)
@@ -103,9 +119,9 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
     }
     
     //Move the view (if required) when keyboard is hidden
-    func keyboardWillHide (notification:NSNotification) {
+    func keyboardWillHide () {
         if isViewRepositioned {
-            self.view.frame.origin.y += getKeyboardHeight(notification)
+            self.view.frame.origin.y += keyBoardHeight
             isViewRepositioned = false
         }
     }
@@ -137,7 +153,11 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
     }
     
     
-    
+    //Resign first responder if user touces anywhere on self.view of this view controller
+    override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
+        self.view.endEditing(true)
+        keyboardWillHide()
+    }
     
     //UITextField Delegates
     func textFieldShouldReturn (textField:UITextField) -> Bool{
