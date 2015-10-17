@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="8191" systemVersion="15B22c" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="BYZ-38-t0r">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="8191" systemVersion="15B30a" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="BYZ-38-t0r">
     <dependencies>
+        <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="8154"/>
     </dependencies>
     <scenes>
@@ -29,20 +30,6 @@
                                 <rect key="frame" x="0.0" y="64" width="600" height="492"/>
                                 <animations/>
                             </imageView>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="TOP" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="n5F-Qa-StQ">
-                                <rect key="frame" x="283" y="109" width="34" height="21"/>
-                                <animations/>
-                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
-                                <nil key="highlightedColor"/>
-                            </label>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="BOTTOM" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="I31-cK-OtS">
-                                <rect key="frame" x="265" y="490" width="71" height="21"/>
-                                <animations/>
-                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
-                                <nil key="highlightedColor"/>
-                            </label>
                             <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Kld-4e-DkA" userLabel="Bottom Toolbar">
                                 <rect key="frame" x="0.0" y="556" width="600" height="44"/>
                                 <animations/>
@@ -58,28 +45,48 @@
                                     <barButtonItem style="plain" systemItem="flexibleSpace" id="4Fz-NP-f4K"/>
                                 </items>
                             </toolbar>
+                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="TOP" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="sba-uB-czd">
+                                <rect key="frame" x="275" y="104" width="51" height="30"/>
+                                <animations/>
+                                <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                                <textInputTraits key="textInputTraits" returnKeyType="done"/>
+                                <connections>
+                                    <outlet property="delegate" destination="BYZ-38-t0r" id="X1h-rW-Mc3"/>
+                                </connections>
+                            </textField>
+                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="BOTTOM" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="ArT-Ih-3Tk" userLabel="Bottom Text Field">
+                                <rect key="frame" x="259" y="486" width="84" height="30"/>
+                                <animations/>
+                                <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                                <textInputTraits key="textInputTraits" returnKeyType="done"/>
+                                <connections>
+                                    <outlet property="delegate" destination="BYZ-38-t0r" id="8UR-q0-1eG"/>
+                                </connections>
+                            </textField>
                         </subviews>
                         <animations/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                         <constraints>
+                            <constraint firstItem="wci-xE-DhZ" firstAttribute="top" secondItem="sba-uB-czd" secondAttribute="top" constant="-40" id="2KM-26-Hqs"/>
+                            <constraint firstItem="ArT-Ih-3Tk" firstAttribute="centerX" secondItem="wci-xE-DhZ" secondAttribute="centerX" id="7Zu-Rx-GIl"/>
                             <constraint firstItem="Kld-4e-DkA" firstAttribute="width" secondItem="8bC-Xf-vdC" secondAttribute="width" id="7kE-KI-LUf"/>
                             <constraint firstItem="wci-xE-DhZ" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="E1G-rO-Xah"/>
-                            <constraint firstItem="n5F-Qa-StQ" firstAttribute="top" secondItem="wci-xE-DhZ" secondAttribute="top" constant="45" id="ElH-6c-A3Q"/>
                             <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="Kld-4e-DkA" secondAttribute="bottom" id="I47-fl-Ias"/>
-                            <constraint firstItem="n5F-Qa-StQ" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="KbX-AY-gxX"/>
                             <constraint firstItem="wci-xE-DhZ" firstAttribute="bottom" secondItem="Kld-4e-DkA" secondAttribute="top" id="LSi-Hh-417"/>
-                            <constraint firstItem="I31-cK-OtS" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="Q4c-Y2-qkC"/>
                             <constraint firstItem="Kld-4e-DkA" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="SG4-Qe-9be"/>
+                            <constraint firstItem="ArT-Ih-3Tk" firstAttribute="bottom" secondItem="wci-xE-DhZ" secondAttribute="bottom" constant="-40" id="Y3b-hg-mpI"/>
                             <constraint firstItem="wci-xE-DhZ" firstAttribute="width" secondItem="8bC-Xf-vdC" secondAttribute="width" id="dFG-58-HIn"/>
                             <constraint firstItem="M0G-Ri-zWz" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="dKK-9H-RKD"/>
                             <constraint firstItem="wci-xE-DhZ" firstAttribute="top" secondItem="M0G-Ri-zWz" secondAttribute="bottom" id="gvM-th-cem"/>
-                            <constraint firstItem="I31-cK-OtS" firstAttribute="bottom" secondItem="wci-xE-DhZ" secondAttribute="bottom" constant="-45" id="t40-55-QMl"/>
+                            <constraint firstItem="sba-uB-czd" firstAttribute="centerX" secondItem="wci-xE-DhZ" secondAttribute="centerX" id="saT-kG-68u"/>
                             <constraint firstItem="M0G-Ri-zWz" firstAttribute="width" secondItem="8bC-Xf-vdC" secondAttribute="width" id="vrx-7O-E4k"/>
                             <constraint firstItem="M0G-Ri-zWz" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" id="wnm-Gk-kqF"/>
                         </constraints>
                     </view>
                     <connections>
+                        <outlet property="bottomTextField" destination="ArT-Ih-3Tk" id="af9-Th-mZt"/>
                         <outlet property="imageView" destination="wci-xE-DhZ" id="mUA-ih-InG"/>
+                        <outlet property="topTextField" destination="sba-uB-czd" id="mgo-J4-oIB"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
