@@ -14,6 +14,7 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
     @IBOutlet weak var imageView: UIImageView!
     @IBOutlet weak var topTextField: UITextField!
     @IBOutlet weak var bottomTextField: UITextField!
+    @IBOutlet weak var cameraButton: UIBarButtonItem!
     
     
     var isViewRepositioned = false
@@ -25,11 +26,12 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view, typically from a nib.
     }
+    
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
+        setupUI()
         self.subscribeToKeyboardNotifications()
     }
     
@@ -44,7 +46,7 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
     func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : AnyObject]) {
         if let pickedImage = info[UIImagePickerControllerOriginalImage] as? UIImage {
             imageView.image = pickedImage
-            imageView.contentMode = .ScaleToFill
+            imageView.contentMode = .ScaleAspectFit
         }
         
         dismissViewControllerAnimated(true, completion: nil)
@@ -163,6 +165,65 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
     func textFieldShouldReturn (textField:UITextField) -> Bool{
         textField.resignFirstResponder()
         return true
+    }
+    
+    func textFieldShouldBeginEditing(textField: UITextField) -> Bool {
+        
+        //Make placeholder text transparent so that it is not visible to user as soon as editing begins
+        textField.attributedPlaceholder = NSAttributedString(string: textField.placeholder!, attributes: getTransparentStringAttributes())
+        
+        return true
+    }
+    
+    func textFieldShouldEndEditing(textField: UITextField) -> Bool {
+        //Change back the attributes to placehodler to originally set attributes when editing finishes
+        textField.attributedPlaceholder = NSAttributedString(string: textField.placeholder!, attributes: getTextFieldStringAttributes());
+        return true
+    }
+    
+    //One time setup at the beginning of screen display
+    func setupUI () {
+        topTextField.placeholder = "TOP"
+        bottomTextField.placeholder = "BOTTOM"
+        styleTextFields(topTextField, bottomTextField)
+        
+        //Disable camera button if it is not available.
+        if !UIImagePickerController.isSourceTypeAvailable(.Camera) {
+            cameraButton.enabled = false
+        }
+    }
+    
+    
+    //Set attributes of text fields
+    func styleTextFields (textFields: UITextField...) {
+        let textFieldAttributes = getTextFieldStringAttributes()
+        
+        for textField in textFields {
+            textField.defaultTextAttributes = textFieldAttributes
+            textField.textAlignment = .Center
+            textField.attributedPlaceholder = NSAttributedString(string: textField.placeholder!, attributes: textFieldAttributes);
+        }
+        
+    }
+    
+    func getTextFieldStringAttributes () -> [String : AnyObject]{
+        let attributes : [String : AnyObject] =
+        [
+            NSFontAttributeName: UIFont(name: "Helvetica-Bold", size: 32.0)!,
+            NSStrokeColorAttributeName : UIColor.blackColor(),
+            NSForegroundColorAttributeName : UIColor.whiteColor(),
+            NSStrokeWidthAttributeName : -3.0,
+        ]
+        return attributes
+    }
+    
+    func getTransparentStringAttributes () -> [String : AnyObject] {
+        let attributes : [String : AnyObject] =
+        [
+            NSStrokeColorAttributeName : UIColor.clearColor(),
+            NSForegroundColorAttributeName : UIColor.clearColor(),
+        ]
+        return attributes
     }
 }
 
