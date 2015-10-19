@@ -8,6 +8,34 @@
 
 import UIKit
 
+
+extension UIImage {
+    
+    //Method to draw text in an image
+    func drawText(text:NSString, inImage image:UIImage, atPoint point:CGPoint) -> UIImage {
+
+        UIGraphicsBeginImageContextWithOptions(image.size, true, 0.0);
+        image.drawInRect(CGRectMake(0, 0, image.size.width, image.size.height))
+        let rect = CGRectMake(point.x, point.y, image.size.width, image.size.height);
+        UIColor.whiteColor().set()
+
+        let attributes = [
+                NSFontAttributeName: UIFont(name: "Helvetica-Bold", size: 32.0)!,
+                NSStrokeColorAttributeName : UIColor.blackColor(),
+                NSForegroundColorAttributeName : UIColor.whiteColor(),
+                NSStrokeWidthAttributeName : -3.0,
+            ]
+        
+        text.drawInRect(rect, withAttributes: attributes)
+        
+        let newImage = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+        
+        return newImage
+    }
+}
+
+
 class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate, UITextFieldDelegate{
 
     
@@ -73,13 +101,29 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
     @IBAction func shareMemeTapped(sender: AnyObject) {
         if let memeImage = getMemeImage() {
             let activityController = UIActivityViewController(activityItems: [memeImage], applicationActivities: nil)
+            activityController.completionWithItemsHandler =  { (activity:String?, completed:Bool, returnedItems:[AnyObject]?, activityError:NSError?) -> Void in
+                if completed {
+                    print("Image was successfuly shared")
+                }
+            }
             self.presentViewController(activityController, animated: true, completion: nil)
         }
     }
     
+
+    
     
     func getMemeImage () -> UIImage? {
-        return imageView.image
+        //Make image with text of both text fields drawn into it
+        
+        //Draw text of first text field
+        let originalImage = imageView.image;
+        let topTextOrigin = topTextField.frame.origin
+        let bottomTextOrigin = bottomTextField.frame.origin
+        let imageAfterTopTextWritten = originalImage?.drawText(topTextField.text!, inImage: originalImage!, atPoint: topTextOrigin)
+        let imageAfterBottomTextWritten = imageAfterTopTextWritten?.drawText(bottomTextField.text!, inImage: imageAfterTopTextWritten!, atPoint: bottomTextOrigin)
+        
+        return imageAfterBottomTextWritten
     }
     
     
@@ -145,13 +189,16 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
     
     //Returns the first responder object
     func getFirstResponder () -> UIView {
-        for view in self.view.subviews {
+        var count = 0
+        for view in self.imageView.subviews {
+            count++
             if view.isFirstResponder() {
+                print(count)
                 return view
             }
         }
-        
-        return self.view  //If none of the subviews are first responder, return self.view
+        print(count)
+        return self.imageView  //If none of the subviews are first responder, return self.view
     }
     
     
@@ -209,7 +256,7 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
     func getTextFieldStringAttributes () -> [String : AnyObject]{
         let attributes : [String : AnyObject] =
         [
-            NSFontAttributeName: UIFont(name: "Helvetica-Bold", size: 32.0)!,
+            NSFontAttributeName: getTextFont(),
             NSStrokeColorAttributeName : UIColor.blackColor(),
             NSForegroundColorAttributeName : UIColor.whiteColor(),
             NSStrokeWidthAttributeName : -3.0,
@@ -224,6 +271,10 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
             NSForegroundColorAttributeName : UIColor.clearColor(),
         ]
         return attributes
+    }
+    
+    func getTextFont () ->UIFont {
+        return UIFont(name: "Helvetica-Bold", size: 32.0)!
     }
 }
 

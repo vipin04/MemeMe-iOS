@@ -30,6 +30,38 @@
                                     <barButtonItem title="Cancel" id="eWk-6G-rkT"/>
                                 </items>
                             </toolbar>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="89W-kO-ouH" customClass="UIImageView">
+                                <rect key="frame" x="0.0" y="64" width="600" height="492"/>
+                                <subviews>
+                                    <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="TOP" textAlignment="center" minimumFontSize="12" translatesAutoresizingMaskIntoConstraints="NO" id="sba-uB-czd">
+                                        <rect key="frame" x="274" y="40" width="52" height="29"/>
+                                        <animations/>
+                                        <fontDescription key="fontDescription" type="boldSystem" pointSize="24"/>
+                                        <textInputTraits key="textInputTraits" autocapitalizationType="allCharacters" returnKeyType="done"/>
+                                        <connections>
+                                            <outlet property="delegate" destination="BYZ-38-t0r" id="X1h-rW-Mc3"/>
+                                        </connections>
+                                    </textField>
+                                    <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="BOTTOM" textAlignment="center" minimumFontSize="12" translatesAutoresizingMaskIntoConstraints="NO" id="ArT-Ih-3Tk" userLabel="Bottom Text Field">
+                                        <rect key="frame" x="247" y="423" width="106" height="29"/>
+                                        <animations/>
+                                        <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                        <fontDescription key="fontDescription" type="boldSystem" pointSize="24"/>
+                                        <textInputTraits key="textInputTraits" autocapitalizationType="allCharacters" returnKeyType="done"/>
+                                        <connections>
+                                            <outlet property="delegate" destination="BYZ-38-t0r" id="8UR-q0-1eG"/>
+                                        </connections>
+                                    </textField>
+                                </subviews>
+                                <animations/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <constraints>
+                                    <constraint firstItem="ArT-Ih-3Tk" firstAttribute="bottom" secondItem="89W-kO-ouH" secondAttribute="bottom" constant="-40" id="POi-Jd-c1E"/>
+                                    <constraint firstItem="ArT-Ih-3Tk" firstAttribute="centerX" secondItem="89W-kO-ouH" secondAttribute="centerX" id="Qw5-ls-Aun"/>
+                                    <constraint firstItem="sba-uB-czd" firstAttribute="top" secondItem="89W-kO-ouH" secondAttribute="top" constant="40" id="pIE-bq-PFK"/>
+                                    <constraint firstItem="sba-uB-czd" firstAttribute="centerX" secondItem="89W-kO-ouH" secondAttribute="centerX" id="uIx-TY-SNP"/>
+                                </constraints>
+                            </view>
                             <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Kld-4e-DkA" userLabel="Bottom Toolbar">
                                 <rect key="frame" x="0.0" y="556" width="600" height="44"/>
                                 <animations/>
@@ -49,56 +81,26 @@
                                     <barButtonItem style="plain" systemItem="flexibleSpace" id="4Fz-NP-f4K"/>
                                 </items>
                             </toolbar>
-                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="TOP" textAlignment="center" minimumFontSize="12" translatesAutoresizingMaskIntoConstraints="NO" id="sba-uB-czd">
-                                <rect key="frame" x="0.5" y="104" width="600" height="29"/>
-                                <animations/>
-                                <fontDescription key="fontDescription" type="boldSystem" pointSize="24"/>
-                                <textInputTraits key="textInputTraits" autocapitalizationType="allCharacters" returnKeyType="done"/>
-                                <connections>
-                                    <outlet property="delegate" destination="BYZ-38-t0r" id="X1h-rW-Mc3"/>
-                                </connections>
-                            </textField>
-                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="BOTTOM" textAlignment="center" minimumFontSize="12" translatesAutoresizingMaskIntoConstraints="NO" id="ArT-Ih-3Tk" userLabel="Bottom Text Field">
-                                <rect key="frame" x="0.0" y="487" width="600" height="29"/>
-                                <animations/>
-                                <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                <fontDescription key="fontDescription" type="boldSystem" pointSize="24"/>
-                                <textInputTraits key="textInputTraits" autocapitalizationType="allCharacters" returnKeyType="done"/>
-                                <connections>
-                                    <outlet property="delegate" destination="BYZ-38-t0r" id="8UR-q0-1eG"/>
-                                </connections>
-                            </textField>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="wci-xE-DhZ">
-                                <rect key="frame" x="0.0" y="64" width="600" height="492"/>
-                                <animations/>
-                            </imageView>
                         </subviews>
                         <animations/>
                         <color key="backgroundColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstItem="sba-uB-czd" firstAttribute="width" secondItem="wci-xE-DhZ" secondAttribute="width" id="1v4-pH-MlK"/>
-                            <constraint firstItem="wci-xE-DhZ" firstAttribute="top" secondItem="sba-uB-czd" secondAttribute="top" constant="-40" id="2KM-26-Hqs"/>
-                            <constraint firstItem="sba-uB-czd" firstAttribute="width" secondItem="8bC-Xf-vdC" secondAttribute="width" id="3Xu-Ed-qPO"/>
-                            <constraint firstItem="ArT-Ih-3Tk" firstAttribute="centerX" secondItem="wci-xE-DhZ" secondAttribute="centerX" id="7Zu-Rx-GIl"/>
-                            <constraint firstItem="Kld-4e-DkA" firstAttribute="width" secondItem="8bC-Xf-vdC" secondAttribute="width" id="7kE-KI-LUf"/>
-                            <constraint firstItem="wci-xE-DhZ" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="E1G-rO-Xah"/>
-                            <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="Kld-4e-DkA" secondAttribute="bottom" id="I47-fl-Ias"/>
-                            <constraint firstItem="wci-xE-DhZ" firstAttribute="bottom" secondItem="Kld-4e-DkA" secondAttribute="top" id="LSi-Hh-417"/>
-                            <constraint firstItem="Kld-4e-DkA" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="SG4-Qe-9be"/>
-                            <constraint firstItem="ArT-Ih-3Tk" firstAttribute="bottom" secondItem="wci-xE-DhZ" secondAttribute="bottom" constant="-40" id="Y3b-hg-mpI"/>
-                            <constraint firstItem="wci-xE-DhZ" firstAttribute="width" secondItem="8bC-Xf-vdC" secondAttribute="width" id="dFG-58-HIn"/>
-                            <constraint firstItem="M0G-Ri-zWz" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="dKK-9H-RKD"/>
-                            <constraint firstItem="wci-xE-DhZ" firstAttribute="top" secondItem="M0G-Ri-zWz" secondAttribute="bottom" id="gvM-th-cem"/>
-                            <constraint firstItem="ArT-Ih-3Tk" firstAttribute="width" secondItem="wci-xE-DhZ" secondAttribute="width" id="kpU-ck-E4O"/>
-                            <constraint firstItem="sba-uB-czd" firstAttribute="centerX" secondItem="wci-xE-DhZ" secondAttribute="centerX" id="saT-kG-68u"/>
-                            <constraint firstItem="M0G-Ri-zWz" firstAttribute="width" secondItem="8bC-Xf-vdC" secondAttribute="width" id="vrx-7O-E4k"/>
-                            <constraint firstItem="M0G-Ri-zWz" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" id="wnm-Gk-kqF"/>
+                            <constraint firstItem="Kld-4e-DkA" firstAttribute="top" secondItem="89W-kO-ouH" secondAttribute="bottom" id="4Al-od-Qdi"/>
+                            <constraint firstItem="Kld-4e-DkA" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="Ejd-B8-O7R"/>
+                            <constraint firstItem="89W-kO-ouH" firstAttribute="top" secondItem="M0G-Ri-zWz" secondAttribute="bottom" id="JA4-kF-o4t"/>
+                            <constraint firstItem="M0G-Ri-zWz" firstAttribute="width" secondItem="8bC-Xf-vdC" secondAttribute="width" id="SQl-Ew-ROj"/>
+                            <constraint firstItem="89W-kO-ouH" firstAttribute="width" secondItem="8bC-Xf-vdC" secondAttribute="width" id="XCb-2f-I4X"/>
+                            <constraint firstItem="M0G-Ri-zWz" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" id="blZ-UX-dMj"/>
+                            <constraint firstItem="Kld-4e-DkA" firstAttribute="width" secondItem="8bC-Xf-vdC" secondAttribute="width" id="iSz-e5-cz7"/>
+                            <constraint firstItem="M0G-Ri-zWz" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="nKy-WN-Ot9"/>
+                            <constraint firstItem="89W-kO-ouH" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="qcN-ZF-aJT"/>
+                            <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="Kld-4e-DkA" secondAttribute="bottom" id="qqR-Iv-83p"/>
                         </constraints>
                     </view>
                     <connections>
                         <outlet property="bottomTextField" destination="ArT-Ih-3Tk" id="af9-Th-mZt"/>
                         <outlet property="cameraButton" destination="aoT-vd-gqr" id="zFC-n8-7jf"/>
-                        <outlet property="imageView" destination="wci-xE-DhZ" id="mUA-ih-InG"/>
+                        <outlet property="imageView" destination="89W-kO-ouH" id="1fa-CL-SOA"/>
                         <outlet property="topTextField" destination="sba-uB-czd" id="mgo-J4-oIB"/>
                     </connections>
                 </viewController>
