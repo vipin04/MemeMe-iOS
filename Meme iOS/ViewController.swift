@@ -9,33 +9,6 @@
 import UIKit
 import AVFoundation
 
-extension UIImage {
-    
-    //Method to draw text in an image
-    func drawText(text:NSString, inImage image:UIImage, atPoint point:CGPoint) -> UIImage {
-
-        UIGraphicsBeginImageContextWithOptions(image.size, true, 0.0);
-        image.drawInRect(CGRectMake(0, 0, image.size.width, image.size.height))
-        let rect = CGRectMake(point.x, point.y, image.size.width, image.size.height);
-        UIColor.whiteColor().set()
-
-        let attributes = [
-                NSFontAttributeName: UIFont(name: "Helvetica-Bold", size: 32.0)!,
-                NSStrokeColorAttributeName : UIColor.blackColor(),
-                NSForegroundColorAttributeName : UIColor.whiteColor(),
-                NSStrokeWidthAttributeName : -3.0,
-            ]
-        
-        text.drawInRect(rect, withAttributes: attributes)
-        
-        let newImage = UIGraphicsGetImageFromCurrentImageContext()
-        UIGraphicsEndImageContext()
-        
-        return newImage
-    }
-    
-}
-
 
 class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate, UITextFieldDelegate{
 
@@ -44,14 +17,12 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
     @IBOutlet weak var cameraButton: UIBarButtonItem!
     @IBOutlet weak var topToolbar: UIToolbar!
     @IBOutlet weak var bottomToolbar: UIToolbar!
+    @IBOutlet weak var imageView: UIImageView!
+    @IBOutlet weak var backgroundView: UIView!
     
     var isViewRepositioned = false
     var keyBoardHeight:CGFloat = 0.0
-    var imageView = UIImageView()
     
-    @IBAction func AlbumButtonTapped(sender: AnyObject) {
-        
-    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -118,9 +89,18 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         //Make image with text of both text fields drawn into it
         
         //Draw text of first text field
-        let originalImage = drawImageView(imageView: imageView, onView: self.view)
-        let imageAfterTopTextWritten = drawText(fromTextField: topTextField, onImage: originalImage)
-        let imageAfterBottomTextWritten = drawText(fromTextField: bottomTextField, onImage: imageAfterTopTextWritten)
+        let originalImage = drawImageView(imageView, onView: self.backgroundView)
+
+        //Adjust rect of text fields to draw it on the image at exactly the same relative position w.r.t image, as it is displayed on the screen
+        let topTextRectY = topTextField.frame.origin.y - imageView.frame.origin.y;
+        let topTextRect = CGRectMake(topTextField.frame.origin.x, topTextRectY, topTextField.frame.size.width, topTextField.frame.size.height);
+        
+        let bottomTextRectY = bottomTextField.frame.origin.y  - imageView.frame.origin.y;
+        let bottomTextRect = CGRectMake(bottomTextField.frame.origin.x, bottomTextRectY, bottomTextField.frame.size.width, bottomTextField.frame.size.height);
+        
+        //Draw text of UITextFields on images
+        let imageAfterTopTextWritten = drawText(topTextField.text!, withRect: topTextRect, onImage: originalImage)
+        let imageAfterBottomTextWritten = drawText(bottomTextField.text!, withRect: bottomTextRect, onImage: imageAfterTopTextWritten)
         
         return imageAfterBottomTextWritten
     }
@@ -188,15 +168,11 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
     
     //Returns the first responder object
     func getFirstResponder () -> UIView {
-        var count = 0
-        for view in self.imageView.subviews {
-            count++
+        for view in self.view.subviews {
             if view.isFirstResponder() {
-                print(count)
                 return view
             }
         }
-        print(count)
         return self.imageView  //If none of the subviews are first responder, return self.view
     }
     
@@ -237,24 +213,9 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         if !UIImagePickerController.isSourceTypeAvailable(.Camera) {
             cameraButton.enabled = false
         }
-        
-        setupImageViewFrame()
-        self.view.addSubview(imageView)
     }
     
     
-    func setupImageViewFrame () {
-        //Get height of toolbars
-        let topToolbarHeight = topToolbar.frame.size.height
-        let bottomToolbarHeight = bottomToolbar.frame.size.height
-        
-        let imageViewHeight = self.view.frame.size.height - topToolbarHeight - bottomToolbarHeight;
-        let imageViewWidth = self.view.frame.size.width;
-        
-        let imageViewOriginY = self.view.frame.origin.y + topToolbarHeight;
-        
-        imageView.frame = CGRectMake(0.0, imageViewOriginY, imageViewWidth, imageViewHeight)
-    }
     
     
     //Set attributes of text fields
@@ -269,6 +230,7 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         
     }
     
+    
     func getTextFieldStringAttributes () -> [String : AnyObject]{
         let attributes : [String : AnyObject] =
         [
@@ -280,6 +242,7 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         return attributes
     }
     
+    //Use it when you want to hide the text
     func getTransparentStringAttributes () -> [String : AnyObject] {
         let attributes : [String : AnyObject] =
         [
@@ -289,38 +252,58 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         return attributes
     }
     
+    //This font will be used for drawing over the image
     func getTextFont () ->UIFont {
         return UIFont(name: "Helvetica-Bold", size: 32.0)!
     }
     
     
-    func drawText(fromTextField textField:UITextField, onImage image:UIImage) -> UIImage{
+    func drawText(text:String, withRect rect:CGRect, onImage image:UIImage) -> UIImage {
+        //Create graphics context with the size of the received image
         UIGraphicsBeginImageContextWithOptions(image.size, true, 0.0);
+        
+        //Draw received image in the graphics context
         image.drawInRect(CGRectMake(0,0,image.size.width,image.size.height))
 
-        let rect = textField.frame
+        
+        //Set stroke and fill color as white
         UIColor.whiteColor().set()
         
-        let text:NSString = textField.text!
+        //Convert String to NSString as NSString has the method drawInRect which allows drawing the text
+        let text:NSString = text
         text.drawInRect(rect, withAttributes: getTextFieldStringAttributes())
 
+        //Get image from the current image context
         let newImage = UIGraphicsGetImageFromCurrentImageContext();
+        
+        //End image context
         UIGraphicsEndImageContext();
         
         return newImage;
     }
     
     
-    func drawImageView(imageView imgView:UIImageView, onView view:UIView) -> UIImage {
+    func drawImageView(imageView:UIImageView, onView view:UIView) -> UIImage {
+        //Create an image context of same size as view
+        UIGraphicsBeginImageContextWithOptions(view.frame.size, false, 0.0)
+        
+        //Draw view in the that image context
+        view.layer.renderInContext(UIGraphicsGetCurrentContext()!)
+        
+        //Get size of rectangle in which image is currently fitted inside the imageView(as per its aspect ratio)
         let imageRect = AVMakeRectWithAspectRatioInsideRect(imageView.image!.size, imageView.bounds)
         
-        UIGraphicsBeginImageContextWithOptions(view.frame.size, false, 0.0)
-        view.layer.renderInContext(UIGraphicsGetCurrentContext()!)
-
+        //Draw image in the image context occupying the same rectangular area as it is in image view
         imageView.image?.drawInRect(imageRect)
+        
+        //Make image out of current graphics context
         let scaledImage = UIGraphicsGetImageFromCurrentImageContext()
+        
+        //End graphics context as we got the required image
         UIGraphicsEndImageContext();
+        
         return scaledImage
     }
+    
 }
 
