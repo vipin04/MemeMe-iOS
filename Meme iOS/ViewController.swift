@@ -7,7 +7,7 @@
 //
 
 import UIKit
-
+import AVFoundation
 
 extension UIImage {
     
@@ -33,20 +33,21 @@ extension UIImage {
         
         return newImage
     }
+    
 }
 
 
 class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate, UITextFieldDelegate{
 
-    
-    @IBOutlet weak var imageView: UIImageView!
     @IBOutlet weak var topTextField: UITextField!
     @IBOutlet weak var bottomTextField: UITextField!
     @IBOutlet weak var cameraButton: UIBarButtonItem!
-    
+    @IBOutlet weak var topToolbar: UIToolbar!
+    @IBOutlet weak var bottomToolbar: UIToolbar!
     
     var isViewRepositioned = false
     var keyBoardHeight:CGFloat = 0.0
+    var imageView = UIImageView()
     
     @IBAction func AlbumButtonTapped(sender: AnyObject) {
         
@@ -117,11 +118,9 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         //Make image with text of both text fields drawn into it
         
         //Draw text of first text field
-        let originalImage = imageView.image;
-        let topTextOrigin = topTextField.frame.origin
-        let bottomTextOrigin = bottomTextField.frame.origin
-        let imageAfterTopTextWritten = originalImage?.drawText(topTextField.text!, inImage: originalImage!, atPoint: topTextOrigin)
-        let imageAfterBottomTextWritten = imageAfterTopTextWritten?.drawText(bottomTextField.text!, inImage: imageAfterTopTextWritten!, atPoint: bottomTextOrigin)
+        let originalImage = drawImageView(imageView: imageView, onView: self.view)
+        let imageAfterTopTextWritten = drawText(fromTextField: topTextField, onImage: originalImage)
+        let imageAfterBottomTextWritten = drawText(fromTextField: bottomTextField, onImage: imageAfterTopTextWritten)
         
         return imageAfterBottomTextWritten
     }
@@ -238,6 +237,23 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         if !UIImagePickerController.isSourceTypeAvailable(.Camera) {
             cameraButton.enabled = false
         }
+        
+        setupImageViewFrame()
+        self.view.addSubview(imageView)
+    }
+    
+    
+    func setupImageViewFrame () {
+        //Get height of toolbars
+        let topToolbarHeight = topToolbar.frame.size.height
+        let bottomToolbarHeight = bottomToolbar.frame.size.height
+        
+        let imageViewHeight = self.view.frame.size.height - topToolbarHeight - bottomToolbarHeight;
+        let imageViewWidth = self.view.frame.size.width;
+        
+        let imageViewOriginY = self.view.frame.origin.y + topToolbarHeight;
+        
+        imageView.frame = CGRectMake(0.0, imageViewOriginY, imageViewWidth, imageViewHeight)
     }
     
     
@@ -275,6 +291,36 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
     
     func getTextFont () ->UIFont {
         return UIFont(name: "Helvetica-Bold", size: 32.0)!
+    }
+    
+    
+    func drawText(fromTextField textField:UITextField, onImage image:UIImage) -> UIImage{
+        UIGraphicsBeginImageContextWithOptions(image.size, true, 0.0);
+        image.drawInRect(CGRectMake(0,0,image.size.width,image.size.height))
+
+        let rect = textField.frame
+        UIColor.whiteColor().set()
+        
+        let text:NSString = textField.text!
+        text.drawInRect(rect, withAttributes: getTextFieldStringAttributes())
+
+        let newImage = UIGraphicsGetImageFromCurrentImageContext();
+        UIGraphicsEndImageContext();
+        
+        return newImage;
+    }
+    
+    
+    func drawImageView(imageView imgView:UIImageView, onView view:UIView) -> UIImage {
+        let imageRect = AVMakeRectWithAspectRatioInsideRect(imageView.image!.size, imageView.bounds)
+        
+        UIGraphicsBeginImageContextWithOptions(view.frame.size, false, 0.0)
+        view.layer.renderInContext(UIGraphicsGetCurrentContext()!)
+
+        imageView.image?.drawInRect(imageRect)
+        let scaledImage = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext();
+        return scaledImage
     }
 }
 
