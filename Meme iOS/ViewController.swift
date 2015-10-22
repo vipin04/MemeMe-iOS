@@ -19,10 +19,12 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
     @IBOutlet weak var bottomToolbar: UIToolbar!
     @IBOutlet weak var imageView: UIImageView!
     @IBOutlet weak var backgroundView: UIView!
+    @IBOutlet weak var shareButton: UIBarButtonItem!
+    @IBOutlet weak var cancelButton: UIBarButtonItem!
     
     var isViewRepositioned = false
     var keyBoardHeight:CGFloat = 0.0
-    
+    var memes = [MeMeModel]() //empty array of MeMeModel objects
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -41,12 +43,12 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
 
     }
 
-
     
     func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : AnyObject]) {
         if let pickedImage = info[UIImagePickerControllerOriginalImage] as? UIImage {
             imageView.image = pickedImage
             imageView.contentMode = .ScaleAspectFit
+            shareButton.enabled = true
         }
         
         dismissViewControllerAnimated(true, completion: nil)
@@ -72,6 +74,12 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
     
     @IBAction func shareMemeTapped(sender: AnyObject) {
         if let memeImage = getMemeImage() {
+            //As meme image is present, save its associated data before opening the activity view controller
+            let memeModel = MeMeModel(topText: topTextField.text!, bottomText: bottomTextField.text!, originalImage: imageView.image!, modifiedImage: memeImage)
+            memes.append(memeModel)
+            
+        
+            //Show activity controller now
             let activityController = UIActivityViewController(activityItems: [memeImage], applicationActivities: nil)
             activityController.completionWithItemsHandler =  { (activity:String?, completed:Bool, returnedItems:[AnyObject]?, activityError:NSError?) -> Void in
                 if completed {
@@ -213,6 +221,13 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         if !UIImagePickerController.isSourceTypeAvailable(.Camera) {
             cameraButton.enabled = false
         }
+        
+        //Disable share button if no image is there in imageView
+        if imageView.image == nil {
+            shareButton.enabled = false
+        }
+        
+        cancelButton.enabled = false
     }
     
     
