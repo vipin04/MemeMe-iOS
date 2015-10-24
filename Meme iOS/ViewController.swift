@@ -34,12 +34,12 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         setupUI()
-        self.subscribeToKeyboardNotifications()
+        subscribeToKeyboardNotifications()
     }
     
     override func viewWillDisappear(animated: Bool) {
         super.viewWillDisappear(animated)
-        self.unsubscribeFromKeyboardNotifications()
+        unsubscribeFromKeyboardNotifications()
 
     }
 
@@ -74,30 +74,32 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
     
     @IBAction func shareMemeTapped(sender: AnyObject) {
         if let memeImage = getMemeImage() {
-            //As meme image is present, save its associated data before opening the activity view controller
-            let memeModel = MeMeModel(topText: topTextField.text!, bottomText: bottomTextField.text!, originalImage: imageView.image!, modifiedImage: memeImage)
-            memes.append(memeModel)
-            
         
             //Show activity controller now
             let activityController = UIActivityViewController(activityItems: [memeImage], applicationActivities: nil)
-            activityController.completionWithItemsHandler =  { (activity:String?, completed:Bool, returnedItems:[AnyObject]?, activityError:NSError?) -> Void in
+            activityController.completionWithItemsHandler =  {
+                [unowned self]
+                (activity:String?, completed:Bool, returnedItems:[AnyObject]?, activityError:NSError?) -> Void in
                 if completed {
+                    self.saveMemeWithTopText(self.topTextField.text!, bottomText: self.bottomTextField.text!, originalImage: self.imageView.image!, modifiedImage: memeImage)
                     print("Image was successfuly shared")
                 }
             }
-            self.presentViewController(activityController, animated: true, completion: nil)
+            presentViewController(activityController, animated: true, completion: nil)
         }
     }
     
-
+    func saveMemeWithTopText (topText:NSString, bottomText:NSString, originalImage:UIImage, modifiedImage:UIImage) {
+        let memeModel = MeMeModel(topText: topText, bottomText: bottomText, originalImage: originalImage, modifiedImage:modifiedImage )
+        memes.append(memeModel)
+    }
     
     
     func getMemeImage () -> UIImage? {
         //Make image with text of both text fields drawn into it
         
         //Draw text of first text field
-        let originalImage = drawImageView(imageView, onView: self.backgroundView)
+        let originalImage = drawImageView(imageView, onView: backgroundView)
 
         //Adjust rect of text fields to draw it on the image at exactly the same relative position w.r.t image, as it is displayed on the screen
         let topTextRectY = topTextField.frame.origin.y - imageView.frame.origin.y;
@@ -120,7 +122,7 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         imagePicker.sourceType = source
         
         imagePicker.delegate = self
-        self.presentViewController(imagePicker, animated: true, completion: nil)
+        presentViewController(imagePicker, animated: true, completion: nil)
     }
     
     
@@ -146,7 +148,7 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         let keyboardY = getKeyboardRect(notification).origin.y - keyBoardHeight
         
         if firstResponder.frame.origin.y >= keyboardY {
-            self.view.frame.origin.y -= getKeyboardHeight(notification)
+            view.frame.origin.y -= getKeyboardHeight(notification)
             isViewRepositioned = true
         }
     }
@@ -154,7 +156,7 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
     //Move the view (if required) when keyboard is hidden
     func keyboardWillHide () {
         if isViewRepositioned {
-            self.view.frame.origin.y += keyBoardHeight
+            view.frame.origin.y += keyBoardHeight
             isViewRepositioned = false
         }
     }
@@ -181,13 +183,13 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
                 return view
             }
         }
-        return self.imageView  //If none of the subviews are first responder, return self.view
+        return self.view  //If none of the subviews are first responder, return self.view
     }
     
     
     //Resign first responder if user touces anywhere on self.view of this view controller
     override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
-        self.view.endEditing(true)
+        view.endEditing(true)
         keyboardWillHide()
     }
     
