@@ -24,7 +24,9 @@ class MakeMemeViewController: UIViewController, UIImagePickerControllerDelegate,
     
     var isViewRepositioned = false
     var keyBoardHeight:CGFloat = 0.0
-    var memes = [MeMeModel]() //empty array of MeMeModel objects
+    var shouldEnableCancelButton = false;
+    
+    //MARK: - UIViewController methods
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -44,6 +46,16 @@ class MakeMemeViewController: UIViewController, UIImagePickerControllerDelegate,
     }
 
     
+    
+    //MARK: - Status bar related
+    
+    override func prefersStatusBarHidden() -> Bool {
+        return true;
+    }
+    
+    
+    //MARK: - Image picker related
+    
     func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : AnyObject]) {
         if let pickedImage = info[UIImagePickerControllerOriginalImage] as? UIImage {
             imageView.image = pickedImage
@@ -54,13 +66,22 @@ class MakeMemeViewController: UIViewController, UIImagePickerControllerDelegate,
         dismissViewControllerAnimated(true, completion: nil)
     }
     
+    
+    func presentImagePickerWithSourceType(source:UIImagePickerControllerSourceType) {
+        let imagePicker = UIImagePickerController();
+        imagePicker.allowsEditing = false
+        imagePicker.sourceType = source
+        
+        imagePicker.delegate = self
+        presentViewController(imagePicker, animated: true, completion: nil)
+    }
+    
     func imagePickerControllerDidCancel(picker: UIImagePickerController) {
         dismissViewControllerAnimated(true, completion: nil)
     }
     
-    override func prefersStatusBarHidden() -> Bool {
-        return true;
-    }
+    
+    //MARK: - Button actions
     
     @IBAction func albumButtonTapped(sender: AnyObject) {
         presentImagePickerWithSourceType(.PhotoLibrary)
@@ -83,15 +104,34 @@ class MakeMemeViewController: UIViewController, UIImagePickerControllerDelegate,
                 if completed {
                     self.saveMemeWithTopText(self.topTextField.text!, bottomText: self.bottomTextField.text!, originalImage: self.imageView.image!, modifiedImage: memeImage)
                     print("Image was successfuly shared")
+                    
+                    self.switchToTabBarViewController()
                 }
             }
             presentViewController(activityController, animated: true, completion: nil)
         }
     }
     
+    @IBAction func cancelButtonTapped(sender: AnyObject) {
+        self.presentingViewController?.dismissViewControllerAnimated(true, completion: nil)
+    }
+
+    
+    //MARK: Move to tab bar controller
+    func switchToTabBarViewController () {
+        let viewController = self.storyboard!.instantiateViewControllerWithIdentifier("memeTabBarController") as! UITabBarController
+        UIApplication.sharedApplication().keyWindow?.rootViewController = viewController;
+    }
+    
+    
+    
+    //MARK: - Image to meme conversion
+    
     func saveMemeWithTopText (topText:NSString, bottomText:NSString, originalImage:UIImage, modifiedImage:UIImage) {
-        let memeModel = MeMeModel(topText: topText, bottomText: bottomText, originalImage: originalImage, modifiedImage:modifiedImage )
-        memes.append(memeModel)
+        let meme = MeMeModel(topText: topText, bottomText: bottomText, originalImage: originalImage, modifiedImage:modifiedImage )
+        
+        //Save meme in globally availabe memes array
+        (UIApplication.sharedApplication().delegate as! AppDelegate).memes.append(meme)
     }
     
     
@@ -115,18 +155,11 @@ class MakeMemeViewController: UIViewController, UIImagePickerControllerDelegate,
         return imageAfterBottomTextWritten
     }
     
-    
-    func presentImagePickerWithSourceType(source:UIImagePickerControllerSourceType) {
-        let imagePicker = UIImagePickerController();
-        imagePicker.allowsEditing = false
-        imagePicker.sourceType = source
-        
-        imagePicker.delegate = self
-        presentViewController(imagePicker, animated: true, completion: nil)
-    }
+
     
     
 
+    //MARK: - Keyboard display management
     
     //Register for Notifications when keyboard appears
     func subscribeToKeyboardNotifications () {
@@ -175,6 +208,7 @@ class MakeMemeViewController: UIViewController, UIImagePickerControllerDelegate,
     }
     
     
+    //MARK: - First Responder management
     
     //Returns the first responder object
     func getFirstResponder () -> UIView {
@@ -193,7 +227,7 @@ class MakeMemeViewController: UIViewController, UIImagePickerControllerDelegate,
         keyboardWillHide()
     }
     
-    //UITextField Delegates
+    //MARK: - UITextField Delegates
     func textFieldShouldReturn (textField:UITextField) -> Bool{
         textField.resignFirstResponder()
         return true
@@ -229,11 +263,12 @@ class MakeMemeViewController: UIViewController, UIImagePickerControllerDelegate,
             shareButton.enabled = false
         }
         
-        cancelButton.enabled = false
+        cancelButton.enabled = shouldEnableCancelButton
     }
     
     
     
+    //MARK: - TextField relelated methods
     
     //Set attributes of text fields
     func styleTextFields (textFields: UITextField...) {
@@ -275,6 +310,7 @@ class MakeMemeViewController: UIViewController, UIImagePickerControllerDelegate,
     }
     
     
+    //MARK: - Drawing methods
     func drawText(text:String, withRect rect:CGRect, onImage image:UIImage) -> UIImage {
         //Create graphics context with the size of the received image
         UIGraphicsBeginImageContextWithOptions(image.size, true, 0.0);
